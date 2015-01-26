@@ -8,9 +8,10 @@ import scala.util.Random
 object Helpers {
 
   private sealed abstract class Operation
+  private case object Components               extends Operation
   private case class Connected(p: Int, q: Int) extends Operation
   private case class Union(p: Int, q: Int)     extends Operation
-  private case class Find(p: Int)      extends Operation
+  private case class Find(p: Int)              extends Operation
 
   private def randomOps(N: Int): Seq[Operation] = {
     require(N >= 0)
@@ -19,10 +20,11 @@ object Helpers {
       val p = Random.nextInt(N)
       val q = Random.nextInt(N)
 
-      val op = Random.nextInt(3) match {
-        case 0 => Connected(p, q)
-        case 1 => Union(p, q)
-        case 2 => Find(p)
+      val op = Random.nextInt(4) match {
+        case 0 => Components
+        case 1 => Connected(p, q)
+        case 2 => Union(p, q)
+        case 3 => Find(p)
       }
 
       op
@@ -30,18 +32,17 @@ object Helpers {
   }
 
   private def executeOp(uf: UnionFind, op: Operation): Unit = op match {
+    case Components      => uf.components
     case Connected(p, q) => uf.connected(p, q)
     case Union(p, q)     => uf.union(p, q)
     case Find(p)         => uf.find(p)
   }
 
-  private def executeOps(uf: QuickFind, ops: Seq[Operation]): Unit = ops.foreach(executeOp(uf, _))
-
-  def randQuickFind(N: Int): QuickFind = {
+  def randQuickFind(N: Int): UnionFind = {
     val ops = randomOps(N)
-    val uf  = new QuickFind(N)
+    val uf  = new WeightedQuickUnion(N)
 
-    executeOps(uf, ops)
+    ops.foreach(executeOp(uf, _))
     uf
   }
 }
