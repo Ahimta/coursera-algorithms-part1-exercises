@@ -3,7 +3,7 @@ package exercises.unionfind
 /**
  * Created by abdullah on 1/25/15.
  */
-class QuickFind(N: Int) extends UnionFind(N) {
+final class QuickFind(N: Int) extends UnionFind(N) {
 
   override def union(p: Int, q: Int): UnionFind = {
 

@@ -40,7 +40,7 @@ object Helpers {
 
   def randQuickFind(N: Int): UnionFind = {
     val ops = randomOps(N)
-    val uf  = new WeightedQuickUnion(N)
+    val uf  = new WeightedQuickUnionWPC(N)
 
     ops.foreach(executeOp(uf, _))
     uf

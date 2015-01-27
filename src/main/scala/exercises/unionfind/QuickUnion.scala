@@ -1,9 +1,11 @@
 package exercises.unionfind
 
+import scala.annotation.tailrec
+
 /**
  * Created by abdullah on 1/26/15.
  */
-class QuickUnion(N: Int) extends UnionFind(N) {
+final class QuickUnion(N: Int) extends UnionFind(N) {
 
   override def union(p: Int, q: Int): UnionFind = {
     val pid = find(p)
@@ -16,11 +18,12 @@ class QuickUnion(N: Int) extends UnionFind(N) {
     }
   }
 
+  @tailrec
   override def find(p: Int): Int = {
     require(isValidId(p))
 
-    val root = ids(p)
-    if (p == root) { p }
-    else { find(root) }
+    val pid = ids(p)
+    if (p == pid) { p }
+    else { find(pid) }
   }
 }

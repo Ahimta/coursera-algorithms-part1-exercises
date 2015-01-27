@@ -3,11 +3,11 @@ package exercises.unionfind
 import scala.annotation.tailrec
 
 /**
- * Created by abdullah on 1/26/15.
+ * Created by abdullah on 1/27/15.
  */
-final class WeightedQuickUnion(N: Int) extends UnionFind(N) {
+final class WeightedQuickUnionWPC(N: Int) extends UnionFind(N) {
 
-  val szs = Array.fill(N)(0)
+  val szs = Array.fill(N)(0.toByte)
 
   override def union(p: Int, q: Int): UnionFind = {
 
@@ -16,14 +16,11 @@ final class WeightedQuickUnion(N: Int) extends UnionFind(N) {
 
     if (pid == qid) { this }
     else {
-      _components -= 1
-
-      if (szs(pid) < szs(qid)) {
+      if      (szs(pid) > szs(qid)) { ids(qid) = pid }
+      else if (szs(pid) < szs(qid)) { ids(pid) = qid }
+      else {
         ids(qid) = pid
-        szs(pid) += 1
-      } else {
-        ids(pid) = qid
-        szs(qid) += 1
+        szs(pid) = (szs(pid) + 1).toByte
       }
       this
     }
@@ -34,8 +31,10 @@ final class WeightedQuickUnion(N: Int) extends UnionFind(N) {
     require(isValidId(p))
 
     val pid = ids(p)
-
     if (p == pid) { p }
-    else { find(pid) }
+    else {
+      ids(p) = ids(pid)
+      find(pid)
+    }
   }
 }
