@@ -7,26 +7,26 @@ import scala.annotation.tailrec
  */
 final class WeightedQuickUnion(N: Int) extends UnionFind(N) {
 
-  val szs = Array.fill(N)(0)
+  val szs = Array.fill(N)(1)
 
   override def union(p: Int, q: Int): UnionFind = {
 
     val pid = find(p)
     val qid = find(q)
 
-    if (pid == qid) { this }
-    else {
+    if (pid != qid) {
       _components -= 1
 
-      if (szs(pid) < szs(qid)) {
+      if (szs(pid) > szs(qid)) {
         ids(qid) = pid
-        szs(pid) += 1
+        szs(pid) += szs(qid)
       } else {
         ids(pid) = qid
-        szs(qid) += 1
+        szs(qid) += szs(pid)
       }
-      this
     }
+
+    this
   }
 
   @tailrec

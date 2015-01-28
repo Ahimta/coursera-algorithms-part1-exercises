@@ -14,16 +14,16 @@ final class WeightedQuickUnionWPC(N: Int) extends UnionFind(N) {
     val pid = find(p)
     val qid = find(q)
 
-    if (pid == qid) { this }
-    else {
+    if (pid != qid) {
       if      (szs(pid) > szs(qid)) { ids(qid) = pid }
       else if (szs(pid) < szs(qid)) { ids(pid) = qid }
       else {
         ids(qid) = pid
         szs(pid) = (szs(pid) + 1).toByte
       }
-      this
     }
+
+    this
   }
 
   @tailrec

@@ -11,11 +11,9 @@ final class QuickUnion(N: Int) extends UnionFind(N) {
     val pid = find(p)
     val qid = find(q)
 
-    if (pid == qid) { this }
-    else {
-      ids(qid) = pid
-      this
-    }
+    if (pid != qid) { ids(qid) = pid }
+
+    this
   }
 
   @tailrec

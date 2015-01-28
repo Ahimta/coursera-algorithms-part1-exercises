@@ -10,16 +10,16 @@ final class QuickFind(N: Int) extends UnionFind(N) {
     val pid = find(p)
     val qid = find(q)
 
-    if (pid == qid) { this }
-    else {
+    if (pid != qid) {
       for (i <- 0 until N) yield {
         if (ids(i) == qid) {
           ids(i) = pid
         }
       }
       _components -= 1
-      this
     }
+
+    this
   }
 
   override def find(p: Int): Int = {
