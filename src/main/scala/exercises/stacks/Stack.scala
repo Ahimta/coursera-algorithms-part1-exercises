@@ -6,7 +6,7 @@ package exercises.stacks
 abstract class Stack[T] {
 
   protected var _length = 0
-  protected val stack: List[T]
+  protected val stack: java.util.List[T]
 
   final def length: Int = _length
 
