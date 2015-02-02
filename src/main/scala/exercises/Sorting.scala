@@ -15,32 +15,21 @@ object Sorting {
 
   private def insertionSort[T](xs: Array[T], step: Int)(implicit ord: Ordering[T]): Array[T] = {
 
-    var isSorted = false
-    var i        = 0
+    var i = step
 
-    while (i < xs.length && !isSorted) {
+    while (i < xs.length) {
 
-      var shifts = 0
-      var j      = i + step
+      var currentIndex = i
+      var prevIndex    = i - step
 
-      while (j < xs.length) {
+      while (prevIndex >= 0 && ord.lt(xs(currentIndex), xs(prevIndex))) {
+        swap(xs, prevIndex, currentIndex)
 
-        var currentIndex = j
-        var prevIndex    = j - step
-
-        while (prevIndex >= 0 && ord.lt(xs(currentIndex), xs(prevIndex))) {
-          swap(xs, currentIndex, prevIndex)
-
-          currentIndex -= step
-          prevIndex    -= step
-          shifts       += 1
-        }
-
-        isSorted = shifts == 0
-        j += step
+        currentIndex -= step
+        prevIndex    -= step
       }
 
-      i += 1
+      i += step
     }
 
     xs
