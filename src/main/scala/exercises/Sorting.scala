@@ -13,7 +13,7 @@ object Sorting {
     xs(j) = tmp
   }
 
-  private def insertionSort[T](xs: Array[T], step: Int)(implicit ord: Ordering[T]): Array[T] = {
+  private def hsort[T](xs: Array[T], step: Int)(implicit ord: Ordering[T]): Array[T] = {
 
     var i = step
 
@@ -29,7 +29,7 @@ object Sorting {
         prevIndex    -= step
       }
 
-      i += step
+      i += 1
     }
 
     xs
@@ -74,7 +74,7 @@ object Sorting {
     xs
   }
 
-  def insertionSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = insertionSort(xs, 1)
+  def insertionSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = hsort(xs, 1)
 
   def shellSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = {
 
@@ -83,8 +83,8 @@ object Sorting {
       var k = xs.length
 
       do {
-        k /= 2
-        insertionSort(xs, k)
+        k = k / 3 + 1
+        hsort(xs, k)
       } while (k > 1)
     }
 
