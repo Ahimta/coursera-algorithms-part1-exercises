@@ -20,6 +20,10 @@ object SortingSpecification extends Properties("Sort") {
     xs.sorted == Sorting.shellSort(xs.toArray).toList
   }
 
+  property("Sorting.quickSort") = forAll { (xs: List[Int]) =>
+    xs.sorted == Sorting.quickSort(xs.toArray).toList
+  }
+
   property("Sorting.shuffle") = forAll { (xs: List[Int]) =>
     Sorting.shuffle(xs.toArray).sorted.toList == xs.sorted
   }
