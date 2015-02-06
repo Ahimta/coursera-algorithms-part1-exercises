@@ -62,11 +62,54 @@ object Sorting {
     (lt, gt)
   }
 
+  private def merge[T](xs: Array[T], ys: Array[T], lo: Int, hi: Int)(implicit ord: Ordering[T]): Array[T] = {
+
+    for (i <- (lo to hi)) yield {
+      ys(i) = xs(i)
+    }
+
+    val midIndex = (hi - lo) / 2 + lo
+
+    var mergedIndex = lo
+    var rightIndex  = midIndex + 1
+    var leftIndex   = lo
+
+    while (leftIndex <= midIndex || rightIndex <= hi) {
+
+      if      (rightIndex > hi || (leftIndex <= midIndex && ord.lteq(ys(leftIndex), ys(rightIndex)))) {
+        xs(mergedIndex) = ys(leftIndex)
+        leftIndex += 1
+      }
+      else if (leftIndex > midIndex || (rightIndex <= hi && ord.lteq(ys(rightIndex), ys(leftIndex)))) {
+        xs(mergedIndex) = ys(rightIndex)
+        rightIndex += 1
+      }
+
+      mergedIndex += 1
+    }
+
+    xs
+  }
+
   private def quickSort[T](xs: Array[T], lo: Int, hi: Int)(implicit ord: Ordering[T]): Array[T] = {
     if (lo < hi) {
       val (min, max) = partition(xs, lo, hi)
       quickSort(xs, lo, min - 1)
       quickSort(xs, max + 1, hi)
+    }
+
+    xs
+  }
+
+  private def mergeSort[T](xs: Array[T], ys: Array[T], lo: Int, hi: Int)(implicit ord: Ordering[T]): Array[T] = {
+
+    if (lo < hi) {
+      val mid = (hi - lo) / 2 + lo
+
+      mergeSort(xs, ys, lo, mid)
+      mergeSort(xs, ys, (mid + 1), hi)
+
+      merge(xs, ys, lo, hi)
     }
 
     xs
@@ -102,6 +145,10 @@ object Sorting {
 
     xs
   }
+
+  def partition[T](xs: Array[T])(implicit ord: Ordering[T]): (Int, Int) = partition(xs, 0, (xs.length - 1))
+
+  def merge[T](xs: Array[T], ys: Array[T])(implicit ord: Ordering[T]): Array[T] = merge(xs, ys, 0, (xs.length - 1))
 
   def selectionSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = {
 
@@ -150,12 +197,17 @@ object Sorting {
     xs
   }
 
-  def partition[T](xs: Array[T])(implicit ord: Ordering[T]): (Int, Int) = partition(xs, 0, (xs.length - 1))
-
   def quickSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] =
     if (xs.isEmpty || xs.length == 1) { xs }
     else {
       shuffle(xs)
       quickSort(xs, 0, (xs.length - 1))
+    }
+
+  def mergeSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] =
+    if (xs.isEmpty || xs.length == 1) { xs }
+    else {
+      val ys = xs.clone()
+      mergeSort(xs, ys, 0, (xs.length - 1))
     }
 }
