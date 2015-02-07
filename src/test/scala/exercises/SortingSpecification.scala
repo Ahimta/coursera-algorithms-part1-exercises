@@ -28,6 +28,10 @@ object SortingSpecification extends Properties("Sort") {
     xs.sorted == Sorting.mergeSort(xs.toArray).toList
   }
 
+  property("Sorting.bubbleSort") = forAll { (xs: List[Byte]) =>
+    xs.sorted == Sorting.bubbleSort(xs.toArray).toList
+  }
+
   property("Sorting.shuffle") = forAll { (xs: List[Byte]) =>
     Sorting.shuffle(xs.toArray).sorted.toList == xs.sorted
   }

@@ -115,18 +115,18 @@ object Sorting {
     xs
   }
 
-  private def hsort[T](xs: Array[T], step: Int)(implicit ord: Ordering[T]): Array[T] = {
+  private def hsort[T](xs: Array[T], h: Int)(implicit ord: Ordering[T]): Array[T] = {
 
-    for (i <- (step until xs.length)) yield {
+    for (i <- (h until xs.length)) yield {
 
       var currentIndex = i
-      var prevIndex    = i - step
+      var prevIndex    = i - h
 
       while (prevIndex >= 0 && ord.lt(xs(currentIndex), xs(prevIndex))) {
 
         swap(xs, prevIndex, currentIndex)
-        currentIndex -= step
-        prevIndex    -= step
+        currentIndex -= h
+        prevIndex    -= h
       }
     }
 
@@ -195,4 +195,29 @@ object Sorting {
       val ys = xs.clone()
       mergeSort(xs, ys, 0, (xs.length - 1))
     }
+
+  def bubbleSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = {
+
+    var isSorted = false
+    var sorted   = xs.length
+    var i        = 0
+
+    while (i < xs.length && !isSorted) {
+
+      isSorted = true
+
+      for (j <- (1 until sorted)) {
+
+        if (ord.gt(xs(j - 1), xs(j))) {
+          swap(xs, (j - 1), j)
+          isSorted = false
+        }
+      }
+
+      sorted -= 1
+      i      += 1
+    }
+
+    xs
+  }
 }
