@@ -117,9 +117,7 @@ object Sorting {
 
   private def hsort[T](xs: Array[T], step: Int)(implicit ord: Ordering[T]): Array[T] = {
 
-    var i = step
-
-    while (i < xs.length) {
+    for (i <- (step until xs.length)) yield {
 
       var currentIndex = i
       var prevIndex    = i - step
@@ -130,8 +128,6 @@ object Sorting {
         currentIndex -= step
         prevIndex    -= step
       }
-
-      i += 1
     }
 
     xs
@@ -152,29 +148,22 @@ object Sorting {
 
   def selectionSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = {
 
-    var i = 0
+    for (i <- (0 until xs.length)) yield {
 
-    while (i < xs.length) {
+      var minIndex = i
+      var min      = xs(i)
 
-      var currentMinIndex = i
-      var currentMin      = xs(i)
-      var j               = i + 1
+      for (j <- ((i + 1) until xs.length)) yield {
 
-      while (j < xs.length) {
+        val current = xs(j)
 
-        val currentElt = xs(j)
-
-        if (ord.lt(currentElt, currentMin)) {
-          currentMinIndex = j
-          currentMin      = currentElt
+        if (ord.lt(current, min)) {
+          minIndex = j
+          min      = current
         }
-
-        j += 1
       }
 
-      swap(xs, i, currentMinIndex)
-
-      i += 1
+      swap(xs, i, minIndex)
     }
 
     xs
@@ -186,12 +175,8 @@ object Sorting {
 
     if (xs.length > 1) {
 
-      var k = xs.length
-
-      do {
-        k = k / 3 + 1
-        hsort(xs, k)
-      } while (k > 1)
+      val increments = Stream.iterate(1)(3 * _ + 1).takeWhile(_ < xs.length).reverse
+      increments.foreach(hsort(xs, _))
     }
 
     xs
