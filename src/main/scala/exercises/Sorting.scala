@@ -1,5 +1,6 @@
 package exercises
 
+import scala.annotation.tailrec
 import scala.util.Random
 
 /**
@@ -219,5 +220,28 @@ object Sorting {
     }
 
     xs
+  }
+
+  def quickSelect[T](xs: Array[T], k: Int)(implicit ord: Ordering[T]): Option[T] = {
+
+    require(k >= 1)
+
+    @tailrec
+    def helper(lo: Int, hi: Int): Option[T] = {
+      if (lo == hi && (k - 1) == lo) { Some(xs(lo)) }
+      else if (lo < hi) {
+        val (min, max) = partition(xs, lo, hi)
+
+        if ((k - 1) >= min && (k - 1) <= max) { Some(xs(min)) }
+        else if ((k - 1) < min) { helper(lo, (min - 1)) }
+        else if ((k - 1) > max) { helper((max + 1), hi) }
+        else { assert(false); None }
+
+      }
+      else { None }
+    }
+
+    if (k > xs.length) { None }
+    else               { helper(0, (xs.length - 1)) }
   }
 }
