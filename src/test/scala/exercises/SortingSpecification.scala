@@ -6,19 +6,7 @@ import org.scalacheck.Properties
 /**
  * Created by Abdullah Alansari on 2/2/15.
  */
-object SortingSpecification extends Properties("Sort") {
-
-  property("Sorting.quickSelect") = forAll { (range: Byte, k: Byte) =>
-    (range > 0 && k >= 1 && k <= range) ==> {
-      Sorting.quickSelect((1 to range).toArray, k) == Some(k)
-    }
-  }
-
-  property("Sorting.quickSelect") = forAll { (range: Byte, k: Byte) =>
-    (range > 0 && k > range) ==> {
-      Sorting.quickSelect((1 to range).toArray, k) == None
-    }
-  }
+object SortingSpecification extends Properties("Sorting") {
 
   property("Sorting.insertionSort") = forAll { (xs: List[Byte]) =>
     xs.sorted == Sorting.insertionSort(xs.toArray).toList

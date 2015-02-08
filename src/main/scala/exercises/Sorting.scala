@@ -1,6 +1,5 @@
 package exercises
 
-import scala.annotation.tailrec
 import scala.util.Random
 
 /**
@@ -14,7 +13,9 @@ object Sorting {
     xs(j) = tmp
   }
 
-  private def partition[T](xs: Array[T], lo: Int, hi: Int)(implicit ord: Ordering[T]): (Int, Int) = {
+  def partition[T](xs: Array[T], lo: Int, hi: Int)(implicit ord: Ordering[T]): (Int, Int) = {
+
+    require(hi > lo && lo >= 0 && hi < xs.length)
 
     val pivot = xs(lo)
 
@@ -24,7 +25,11 @@ object Sorting {
     var gt   = hi
 
     while (lt <= gt) {
-      if      (ord.equiv(xs(lt), pivot)) {
+      while (lt <= gt && ord.lt(xs(lt), pivot)) { lt += 1 }
+      while (lt <= gt && ord.gt(xs(gt), pivot)) { gt -= 1 }
+
+      if (lt > gt) ()
+      else if (ord.equiv(xs(lt), pivot)) {
         swap(xs, eqlt, lt)
         eqlt += 1
         lt   += 1
@@ -63,9 +68,11 @@ object Sorting {
     (lt, gt)
   }
 
-  private def merge[T](xs: Array[T], ys: Array[T], lo: Int, hi: Int)(implicit ord: Ordering[T]): Array[T] = {
+  def merge[T](xs: Array[T], ys: Array[T], lo: Int, hi: Int)(implicit ord: Ordering[T]): Array[T] = {
 
-    for (i <- (lo to hi)) yield {
+    require(hi > lo && lo >= 0 && hi < xs.length)
+
+    for (i <- (lo to hi)) {
       ys(i) = xs(i)
     }
 
@@ -92,7 +99,7 @@ object Sorting {
     xs
   }
 
-  private def quickSort[T](xs: Array[T], lo: Int, hi: Int)(implicit ord: Ordering[T]): Array[T] = {
+  def quickSort[T](xs: Array[T], lo: Int, hi: Int)(implicit ord: Ordering[T]): Array[T] = {
     if (lo < hi) {
       val (min, max) = partition(xs, lo, hi)
       quickSort(xs, lo, min - 1)
@@ -102,7 +109,7 @@ object Sorting {
     xs
   }
 
-  private def mergeSort[T](xs: Array[T], ys: Array[T], lo: Int, hi: Int)(implicit ord: Ordering[T]): Array[T] = {
+  def mergeSort[T](xs: Array[T], ys: Array[T], lo: Int, hi: Int)(implicit ord: Ordering[T]): Array[T] = {
 
     if (lo < hi) {
       val mid = (hi - lo) / 2 + lo
@@ -116,9 +123,9 @@ object Sorting {
     xs
   }
 
-  private def hsort[T](xs: Array[T], h: Int)(implicit ord: Ordering[T]): Array[T] = {
+  def hsort[T](xs: Array[T], h: Int)(implicit ord: Ordering[T]): Array[T] = {
 
-    for (i <- (h until xs.length)) yield {
+    for (i <- (h until xs.length)) {
 
       var currentIndex = i
       var prevIndex    = i - h
@@ -136,7 +143,7 @@ object Sorting {
 
   def shuffle[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = {
 
-    for (i <- 1 until xs.length) yield {
+    for (i <- 1 until xs.length) {
       swap(xs, i, Random.nextInt(i))
     }
 
@@ -149,12 +156,12 @@ object Sorting {
 
   def selectionSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = {
 
-    for (i <- (0 until xs.length)) yield {
+    for (i <- (0 until xs.length)) {
 
       var minIndex = i
       var min      = xs(i)
 
-      for (j <- ((i + 1) until xs.length)) yield {
+      for (j <- ((i + 1) until xs.length)) {
 
         val current = xs(j)
 
@@ -174,28 +181,18 @@ object Sorting {
 
   def shellSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = {
 
-    if (xs.length > 1) {
-
-      val increments = Stream.iterate(1)(3 * _ + 1).takeWhile(_ < xs.length).reverse
-      increments.foreach(hsort(xs, _))
-    }
+    val increments = Stream.iterate(1)(3 * _ + 1).takeWhile(_ < xs.length).reverse
+    increments.foreach(hsort(xs, _))
 
     xs
   }
 
-  def quickSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] =
-    if (xs.isEmpty || xs.length == 1) { xs }
-    else {
-      shuffle(xs)
-      quickSort(xs, 0, (xs.length - 1))
-    }
+  def quickSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = {
+    shuffle(xs)
+    quickSort(xs, 0, (xs.length - 1))
+  }
 
-  def mergeSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] =
-    if (xs.isEmpty || xs.length == 1) { xs }
-    else {
-      val ys = xs.clone()
-      mergeSort(xs, ys, 0, (xs.length - 1))
-    }
+  def mergeSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = mergeSort(xs, xs.clone(), 0, (xs.length - 1))
 
   def bubbleSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = {
 
@@ -220,27 +217,5 @@ object Sorting {
     }
 
     xs
-  }
-
-  def quickSelect[T](xs: Array[T], k: Int)(implicit ord: Ordering[T]): Option[T] = {
-
-    require(k >= 1)
-
-    @tailrec
-    def helper(lo: Int, hi: Int): Option[T] = {
-      if (lo < hi) {
-        val (min, max) = partition(xs, lo, hi)
-
-        if      ((k - 1) < min) { helper(lo, (min - 1)) }
-        else if ((k - 1) > max) { helper((max + 1), hi) }
-        else                    { Some(xs(min)) }
-
-      }
-      else if (lo == hi && (k - 1) == lo) { Some(xs(lo)) }
-      else { None }
-    }
-
-    if (k > xs.length) { None }
-    else               { helper(0, (xs.length - 1)) }
   }
 }
