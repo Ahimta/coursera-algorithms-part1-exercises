@@ -228,16 +228,15 @@ object Sorting {
 
     @tailrec
     def helper(lo: Int, hi: Int): Option[T] = {
-      if (lo == hi && (k - 1) == lo) { Some(xs(lo)) }
-      else if (lo < hi) {
+      if (lo < hi) {
         val (min, max) = partition(xs, lo, hi)
 
-        if ((k - 1) >= min && (k - 1) <= max) { Some(xs(min)) }
-        else if ((k - 1) < min) { helper(lo, (min - 1)) }
+        if      ((k - 1) < min) { helper(lo, (min - 1)) }
         else if ((k - 1) > max) { helper((max + 1), hi) }
-        else { assert(false); None }
+        else                    { Some(xs(min)) }
 
       }
+      else if (lo == hi && (k - 1) == lo) { Some(xs(lo)) }
       else { None }
     }
 
