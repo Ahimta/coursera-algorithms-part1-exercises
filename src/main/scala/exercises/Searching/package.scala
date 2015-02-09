@@ -48,4 +48,8 @@ package object Searching {
 
     helper(0, (xs.length - 1))
   }
+
+  def median[T](xs: Array[T])(implicit ord: Ordering[T]): Option[T] =
+    if (xs.length % 2 == 0) { None }
+    else { quickSelect(xs, (xs.length / 2) + 1) }
 }
