@@ -32,6 +32,8 @@ package object Searching {
 
     val kth = if (largest) (xs.length - k + 1) else k
 
+    Sorting.shuffle(xs)
+
     @tailrec
     def helper(lo: Int, hi: Int): Option[T] = {
       if (lo < hi) {
