@@ -19,50 +19,24 @@ object Sorting {
 
     val pivot = xs(lo)
 
-    var eqlt = lo
-    var eqgt = hi
     var lt   = lo
+    var eq   = lo
     var gt   = hi
 
-    while (lt <= gt) {
-      while (lt <= gt && ord.lt(xs(lt), pivot)) { lt += 1 }
-      while (lt <= gt && ord.gt(xs(gt), pivot)) { gt -= 1 }
+    while (eq <= gt) {
 
-      if (lt > gt) ()
-      else if (ord.equiv(xs(lt), pivot)) {
-        swap(xs, eqlt, lt)
-        eqlt += 1
-        lt   += 1
-      }
-      else if (ord.equiv(xs(gt), pivot)) {
-        swap(xs, eqgt, gt)
-        eqgt -= 1
-        gt   -= 1
-      }
-      else if (ord.lt(xs(gt), pivot)) {
-        swap(xs, lt, gt)
+      if (ord.lt(xs(eq), pivot)) {
+        swap(xs, lt, eq)
         lt += 1
+        eq += 1
       }
-      else if (ord.gt(xs(lt), pivot)) {
-        swap(xs, lt, gt)
+      else if (ord.gt(xs(eq), pivot)) {
+        swap(xs, eq, gt)
         gt -= 1
       }
       else {
-        lt += 1
-        gt -= 1
+        eq += 1
       }
-    }
-
-    while (eqgt < hi) {
-      eqgt += 1
-      gt   += 1
-      swap(xs, eqgt, gt)
-    }
-
-    while (eqlt > lo) {
-      eqlt -= 1
-      lt   -= 1
-      swap(xs, eqlt, lt)
     }
 
     (lt, gt)
