@@ -19,9 +19,9 @@ object Sorting {
 
     val pivot = xs(lo)
 
-    var lt   = lo
-    var eq   = lo
-    var gt   = hi
+    var lt = lo
+    var eq = lo
+    var gt = hi
 
     while (eq <= gt) {
 
