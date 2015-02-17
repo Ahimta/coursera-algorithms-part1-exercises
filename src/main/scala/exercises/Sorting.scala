@@ -1,5 +1,6 @@
 package exercises
 
+import scala.annotation.tailrec
 import scala.util.Random
 
 /**
@@ -190,6 +191,39 @@ object Sorting {
       sorted -= 1
       i      += 1
     }
+
+    xs
+  }
+
+  def heapSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = {
+
+    @tailrec
+    def constructHeap(rank: Int): Unit = {
+
+      require(rank <= (xs.length / 2))
+
+      if (rank >= 1) {
+
+        PriorityQueue.sink(xs, rank, xs.length)
+        constructHeap(rank - 1)
+      }
+    }
+
+    @tailrec
+    def sort(rank: Int): Unit = {
+
+      require(rank <= xs.length)
+
+      if (rank > 1) {
+
+        PriorityQueue.swap(xs, 0, rank - 1)
+        PriorityQueue.sink(xs, 1, rank - 1)
+        sort(rank - 1)
+      }
+    }
+
+    constructHeap(xs.length / 2)
+    sort(xs.length)
 
     xs
   }

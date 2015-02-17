@@ -23,11 +23,11 @@ object PriorityQueue {
   }
 
   @tailrec
-  def sink[T](xs: Array[T], rank: Int, lo: Int, hi: Int)(implicit ord: Ordering[T]): Array[T] = {
+  def sink[T](xs: Array[T], rank: Int, hi: Int)(implicit ord: Ordering[T]): Array[T] = {
 
-    require(lo >= 1 && hi <= xs.length)
-    require(rank >= lo && rank <= hi)
-    require(hi >= lo)
+    require(hi <= xs.length)
+    require(rank >= 1 && rank <= hi)
+    require(hi >= 1)
 
     val childRank1 = rank * 2
     val childRank2 = childRank1 + 1
@@ -44,11 +44,11 @@ object PriorityQueue {
 
       if      (ord.gteq(childValue1, childValue2) && ord.gt(childValue1, xs(currentIndex))) {
         swap(xs, currentIndex, childIndex1)
-        sink(xs, childRank1, lo, hi)
+        sink(xs, childRank1, hi)
       }
       else if (ord.gteq(childValue2, childValue1) && ord.gt(childValue2, xs(currentIndex))) {
         swap(xs, currentIndex, childIndex2)
-        sink(xs, childRank2, lo, hi)
+        sink(xs, childRank2, hi)
       }
       else {
         xs
@@ -60,21 +60,21 @@ object PriorityQueue {
   }
 
   @tailrec
-  def swim[T](xs: Array[T], rank: Int, lo: Int, hi: Int)(implicit ord: Ordering[T]): Array[T] = {
+  def swim[T](xs: Array[T], rank: Int, hi: Int)(implicit ord: Ordering[T]): Array[T] = {
 
-    require(lo >= lo && hi <= xs.length)
-    require(rank >= lo && rank <= hi)
-    require(hi >= lo)
+    require(hi <= xs.length)
+    require(rank >= 1 && rank <= hi)
+    require(hi >= 1)
 
     val parentRank = rank / 2
 
     val currentIndex = rank - 1
     val parentIndex  = parentRank - 1
 
-    if (parentRank >= lo && ord.gt(xs(currentIndex), xs(parentIndex))) {
+    if (parentRank >= 1 && ord.gt(xs(currentIndex), xs(parentIndex))) {
 
       swap(xs, parentIndex, currentIndex)
-      swim(xs, parentRank, lo, hi)
+      swim(xs, parentRank, hi)
     }
     else {
       xs
@@ -89,9 +89,9 @@ final class PriorityQueue[T](val N: Int)(implicit ord: Ordering[T], tag: ClassTa
   private var _size = 0
   private val xs    = new Array[T](N)
 
-  private def swim(rank: Int): Array[T] = PriorityQueue.swim(xs, rank, 1, size)
+  private def swim(rank: Int): Array[T] = PriorityQueue.swim(xs, rank, size)
 
-  private def sink(rank: Int): Array[T] = PriorityQueue.sink(xs, rank, 1, size)
+  private def sink(rank: Int): Array[T] = PriorityQueue.sink(xs, rank, size)
 
   def isEmpty: Boolean = _size == 0
 
