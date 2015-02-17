@@ -8,35 +8,35 @@ import org.scalacheck.Properties
  */
 object SortingSpecification extends Properties("Sorting") {
 
-  property("Sorting.insertionSort") = forAll { (xs: List[Byte]) =>
+  property("insertionSort") = forAll { (xs: List[Byte]) =>
     xs.sorted == Sorting.insertionSort(xs.toArray).toList
   }
 
-  property("Sorting.selectionSort") = forAll { (xs: List[Byte]) =>
+  property("selectionSort") = forAll { (xs: List[Byte]) =>
     xs.sorted == Sorting.selectionSort(xs.toArray).toList
   }
 
-  property("Sorting.shellSort") = forAll { (xs: List[Byte]) =>
+  property("shellSort") = forAll { (xs: List[Byte]) =>
     xs.sorted == Sorting.shellSort(xs.toArray).toList
   }
 
-  property("Sorting.quickSort") = forAll { (xs: List[Byte]) =>
+  property("quickSort") = forAll { (xs: List[Byte]) =>
     xs.sorted == Sorting.quickSort(xs.toArray).toList
   }
 
-  property("Sorting.mergeSort") = forAll { (xs: List[Byte]) =>
+  property("mergeSort") = forAll { (xs: List[Byte]) =>
     xs.sorted == Sorting.mergeSort(xs.toArray).toList
   }
 
-  property("Sorting.bubbleSort") = forAll { (xs: List[Byte]) =>
+  property("bubbleSort") = forAll { (xs: List[Byte]) =>
     xs.sorted == Sorting.bubbleSort(xs.toArray).toList
   }
 
-  property("Sorting.shuffle") = forAll { (xs: List[Byte]) =>
+  property("shuffle") = forAll { (xs: List[Byte]) =>
     Sorting.shuffle(xs.toArray).sorted.toList == xs.sorted
   }
 
-  property("Sorting.shuffle") = forAll { (xs: List[Byte]) =>
+  property("shuffle") = forAll { (xs: List[Byte]) =>
     (xs.length > 3) ==> {
       Sorting.shuffle(xs.toArray).toList != xs
     }

@@ -46,7 +46,7 @@ object Sorting {
 
     require(hi > lo && lo >= 0 && hi < xs.length)
 
-    for (i <- (lo to hi)) {
+    for (i <- lo to hi) {
       ys(i) = xs(i)
     }
 
@@ -74,6 +74,7 @@ object Sorting {
   }
 
   def quickSort[T](xs: Array[T], lo: Int, hi: Int)(implicit ord: Ordering[T]): Array[T] = {
+
     if (lo < hi) {
       val (min, max) = partition(xs, lo, hi)
       quickSort(xs, lo, min - 1)
@@ -89,7 +90,7 @@ object Sorting {
       val mid = (hi - lo) / 2 + lo
 
       mergeSort(xs, ys, lo, mid)
-      mergeSort(xs, ys, (mid + 1), hi)
+      mergeSort(xs, ys, mid + 1, hi)
 
       merge(xs, ys, lo, hi)
     }
@@ -99,7 +100,7 @@ object Sorting {
 
   def hsort[T](xs: Array[T], h: Int)(implicit ord: Ordering[T]): Array[T] = {
 
-    for (i <- (h until xs.length)) {
+    for (i <- h until xs.length) {
 
       var currentIndex = i
       var prevIndex    = i - h
@@ -117,25 +118,23 @@ object Sorting {
 
   def shuffle[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = {
 
-    for (i <- 1 until xs.length) {
-      swap(xs, i, Random.nextInt(i))
-    }
+    for (i <- 1 until xs.length) { swap(xs, i, Random.nextInt(i)) }
 
     xs
   }
 
-  def partition[T](xs: Array[T])(implicit ord: Ordering[T]): (Int, Int) = partition(xs, 0, (xs.length - 1))
+  def partition[T](xs: Array[T])(implicit ord: Ordering[T]): (Int, Int) = partition(xs, 0, xs.length - 1)
 
-  def merge[T](xs: Array[T], ys: Array[T])(implicit ord: Ordering[T]): Array[T] = merge(xs, ys, 0, (xs.length - 1))
+  def merge[T](xs: Array[T], ys: Array[T])(implicit ord: Ordering[T]): Array[T] = merge(xs, ys, 0, xs.length - 1)
 
   def selectionSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = {
 
-    for (i <- (0 until xs.length)) {
+    for (i <- 0 until xs.length) {
 
       var minIndex = i
       var min      = xs(i)
 
-      for (j <- ((i + 1) until xs.length)) {
+      for (j <- (i + 1) until xs.length) {
 
         val current = xs(j)
 
@@ -162,11 +161,12 @@ object Sorting {
   }
 
   def quickSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = {
+
     shuffle(xs)
-    quickSort(xs, 0, (xs.length - 1))
+    quickSort(xs, 0, xs.length - 1)
   }
 
-  def mergeSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = mergeSort(xs, xs.clone(), 0, (xs.length - 1))
+  def mergeSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = mergeSort(xs, xs.clone(), 0, xs.length - 1)
 
   def bubbleSort[T](xs: Array[T])(implicit ord: Ordering[T]): Array[T] = {
 
@@ -178,10 +178,11 @@ object Sorting {
 
       isSorted = true
 
-      for (j <- (1 until sorted)) {
+      for (j <- 1 until sorted) {
 
         if (ord.gt(xs(j - 1), xs(j))) {
-          swap(xs, (j - 1), j)
+
+          swap(xs, j - 1, j)
           isSorted = false
         }
       }
