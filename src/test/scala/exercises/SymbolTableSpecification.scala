@@ -3,6 +3,7 @@ package exercises
 import org.scalacheck.{Gen, Arbitrary, Properties}
 import org.scalacheck.Prop.{BooleanOperators, forAll, all}
 
+import scala.annotation.tailrec
 import scala.util.Random
 
 /**
@@ -45,12 +46,28 @@ object SymbolTableSpecification extends Properties("SymbolTable") {
     table
   }
 
+  private def isSorted[T](xs: Array[T])(implicit ord: Ordering[T]): Boolean = {
+
+    @tailrec
+    def loop(i: Int): Boolean = {
+
+      if (i == 0) { true }
+      else if (i > 0 && ord.lteq(xs(i - 1), xs(i))) {
+        loop(i - 1)
+      }
+      else { false }
+    }
+
+    loop(xs.length - 1)
+  }
+
   implicit def arbSymbolTable: Arbitrary[SymbolTable[String,Int]] = Arbitrary {
     Gen.sized(randomSymbolTable)
   }
 
   property("put get") = forAll { (table: SymbolTable[String, Int], key: String, value: Int) =>
 
-    table.put(key, value).get(key).get == value
+    table.put(key, value).get(key).get == value &&
+    isSorted(Stream.from(1).map(_ => table.deleteMin()).takeWhile(!_.isEmpty).map(_.get).toArray)
   }
 }
