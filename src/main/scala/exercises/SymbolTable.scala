@@ -86,6 +86,18 @@ final class SymbolTable[K, V](implicit ord: Ordering[K]) {
     }
   }
 
+  def height: Int = {
+
+    def loop(node: Option[Node[K,V]]): Int = node match {
+
+      case None => -1
+      case Some(Node(left, _, _, _, right)) =>
+        1 + Math.max(loop(left), loop(right))
+    }
+
+    loop(root)
+  }
+
   def keys: Seq[K] = {
 
     val queue = collection.mutable.Queue.empty[K]
@@ -101,6 +113,30 @@ final class SymbolTable[K, V](implicit ord: Ordering[K]) {
     }
 
     loop(root)
+    queue
+  }
+  
+  def keys(min: K, max: K): Seq[K] = {
+    
+    val queue = collection.mutable.Queue.empty[K]
+    
+    def loop(node: Option[Node[K,V]]): Unit = node match {
+
+      case None =>
+
+      case Some(Node(left, key, _, _, right)) =>
+
+        if      (ord.lt(key, min)) { loop(right)  }
+        else if (ord.gt(key, max)) { loop(left)   }
+        else {
+          queue += key
+          loop(left)
+          loop(right)
+        }
+    }
+
+    loop(root)
+    
     queue
   }
 
@@ -232,6 +268,37 @@ final class SymbolTable[K, V](implicit ord: Ordering[K]) {
     }
 
     loop(root)
+  }
+
+  def rank(key: K): Int = {
+
+    def loop(node: Option[Node[K,V]]): Int = node match {
+
+      case None => 0
+      case Some(Node(left, k, _, _, right)) =>
+
+        if      (ord.lt(key, k)) { loop(left) }
+        else if (ord.gt(key, k)) { 1 + size(left) + loop(right) }
+        else                     { 0 }
+    }
+
+    loop(root)
+  }
+
+  def select(k: Int): Option[K] = {
+
+    @tailrec
+    def loop(node: Option[Node[K,V]], k: Int): Option[K] = node match {
+
+      case None => None
+      case Some(Node(left, key, _, _, right)) =>
+
+        if      (size(left) < k) { loop(right, k - size(left) - 1) }
+        else if (size(left) > k) { loop(left, k) }
+        else                     { Some(key) }
+    }
+
+    loop(root, k)
   }
 
   def size: Int = size(root)
